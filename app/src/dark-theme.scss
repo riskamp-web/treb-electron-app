@@ -1,0 +1,219 @@
+/**
+ * dark theme. work in progress. using SASS. add 'dark-theme' to parent.
+ */
+
+ $primary-selection-color: yellow;
+
+ $border-color: rgba(255, 255, 255, .3);
+ 
+ @media (prefers-color-scheme: dark) {
+
+    body {
+      background: #000;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: green;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: green;
+      color: orange;
+  }
+
+   /**
+    * the corner gripper at bottom-right. should be subtle.
+    */
+   .treb-embed-resize-handle {
+     border-right-color: rgba(0, 0, 0, .5);
+     border-bottom-color: rgba(0, 0, 0, .5);
+   }
+ 
+   /** 
+    * the layout rect, when resizing. dotted. not tied to selection, 
+    * although atm we are using the same color.
+    */
+   .treb-embed-resize-rect {
+     border-color: yellow;
+   }
+ 
+   /**
+    * toolbar is outside the normal "treb" layout (although that could
+    * change if desired).
+    */ 
+   .treb-toolbar {
+     color: #fff;
+ 
+     .new-color button, .new-color input {
+       border-color: $border-color;
+     }
+ 
+     .color-list button.color-swatch {
+       border-color: rgba(242, 242, 255, .4);
+     }
+ 
+     .color-list button.color-swatch.default-color {
+       border-color: rgba(242, 242, 255, .7);
+       background: transparent;
+     }
+ 
+     .drop-menu {
+       border-color: $border-color;
+     }
+ 
+     input {
+       color: inherit;
+       background: transparent;
+     }
+ 
+     .container {
+       border-color: $border-color;
+ 
+     }
+ 
+     button {
+       border-color: $border-color;
+ 
+       &:hover, &.active, &:focus {
+         background: #223;
+       }
+ 
+     }
+ 
+     .drop-menu {
+       background: #000;
+     }
+ 
+   }
+ 
+   .treb-chart {
+ 
+    // TODO: chart colors
+
+    background-color: #000;
+
+    text {
+      fill: #ddd;
+    }
+
+    .chart-grid {
+      stroke: #223;
+    }
+
+  }
+  
+   .treb-main.treb-theme {
+     
+     
+ 
+     color: #fff;
+ 
+     /** 
+      * in-cell dropdown list, for "data validation".
+      * TODO: update caret
+      */
+     .treb-dropdown-list {
+       background: #333;
+       border: 1px solid $border-color;
+     }
+ 
+     /** AC list when selecting a function or typing in */
+     .treb-autocomplete {
+       background: #000;
+       li {
+         color: #ddd;
+ 
+         /** active item */
+         a.selected {
+           background: #223;
+         }
+       }
+     }
+ 
+     /** function tooltip when entering text */
+     .treb-autocomplete-tooltip {
+       background: #223;
+       border:1px solid $border-color;
+     }
+ 
+     .treb-formula-bar {
+       .address-label, .editor-container {
+         background: #000;
+         color: #fff;
+         border-color: rgba(255, 255, 255, .4);
+       }
+ 
+       /** 
+        * we have an inline SVG background on the ::after psuedoelement, so 
+        * we can't change the color (or can we? filter?)
+        */
+       .editor-container.locked {
+         background:#444;
+         &::after {
+           opacity: 1;
+         }
+       }
+ 
+     }
+ 
+     .grid-selection {
+ 
+       .alternate-selection {
+         stroke-dasharray: none;
+       }
+ 
+       .primary-selection {
+         color: $primary-selection-color;
+         .fill {
+           opacity: .125;
+         }
+       }
+ 
+     }
+ 
+     .header-overlay {
+       color: $primary-selection-color;
+     }
+ 
+     .note-marker {
+       background: lightblue; /* <-- FIXME */
+       opacity: .8;
+     }
+ 
+     .grid-headers {
+       // font-family: "monospace" ;
+       background: #444;
+       color: #fff;
+     }
+ 
+     .theme-color-2  { color: #c2d5f0; }
+     .theme-color-1  { color: #3b3b3b; }
+
+     .grid-cells {
+       // font-family: "monospace" ;
+       // font-size: 10pt;
+       color: #eee;
+       background: #000;
+       stroke: #333;
+       border-color: #eee;
+     }
+ 
+     .treb-tab-bar {
+       .delete-tab {
+         color: #fff;
+ 
+       }
+       .tab, .add-tab {
+         background: #000;
+         color: #fff;
+         opacity: .5;
+         border-color: rgba(255, 255, 255, .5);
+       }
+       .selected {
+         opacity: 1;
+       }
+     }
+ 
+   }
+ }
+ 
