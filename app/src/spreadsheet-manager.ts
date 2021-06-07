@@ -1,4 +1,6 @@
 
+import { InteropAPI } from './remote-api';
+declare const api: InteropAPI;
 
 interface DocumentMetadata {
 
@@ -73,7 +75,7 @@ export class SpreadsheetManager {
       };
     }
 
-    this.CheckDirty();
+    this.CheckDirty(true);
     this.UpdateTitle();
 
   }
@@ -82,18 +84,19 @@ export class SpreadsheetManager {
     this.spreadsheet?.UpdateTheme();
   }
 
-  public CheckDirty() {
+  public CheckDirty(force_update?: boolean) {
+
 
     const dirty = ((this.spreadsheet as any)?.file_version) !== ((this.spreadsheet as any)?.last_save_version);
     // console.info('sheet dirty', sheet_dirty);
     // const version = (this.spreadsheet as any)?.file_version; // FIXME: need accessor
     // const dirty = version !== this.metadata.saved_version;
 
-    if (dirty !== !!this.metadata.dirty) {
+    if (force_update || (dirty !== !!this.metadata.dirty)) {
       this.metadata.dirty = dirty;
       this.UpdateTitle();
 
-      (self as any).api.menu.update({
+      api.menu.Update({
         save_enabled: dirty,
         revert_enabled: dirty && !!this.metadata.path,
       });
@@ -102,9 +105,20 @@ export class SpreadsheetManager {
 
   }
 
-  public ConfirmChanges() {
+  public async ConfirmChanges(detail?: string): Promise<boolean> {
     if (this.metadata.dirty) {
-      return confirm('Document has unsaved changes, are you sure?');
+
+      // FIXME: all these strings should be parameterized
+
+      const result = await api.modal.Show({
+        message: 'Document has unsaved changes, are you sure?',
+        detail,
+        type: 'question',
+        buttons: ['OK', 'Cancel'],
+      });
+
+      return (result && result.response === 0);
+
     }
     return true;
   }
@@ -202,7 +216,9 @@ export class SpreadsheetManager {
 
     this.UpdateTitle();
 
-    (self as any).api.menu.update({
+    console.info("Check API", api.menu)
+
+    api.menu.Update({
       save_enabled: !!this.metadata.dirty,
       revert_enabled: this.metadata.dirty && !!this.metadata.path,
     });
@@ -223,9 +239,9 @@ export class SpreadsheetManager {
     };
 
     (this.spreadsheet as any).dialog.ShowDialog = async (...args: any[]) => {
-      (self as any).api.menu.update({menu_enabled: false});
+      api.menu.Update({menu_enabled: false});
       const result = await original_dialog_handlers.ShowDialog.apply((this.spreadsheet as any).dialog, args);
-      (self as any).api.menu.update({menu_enabled: true});
+      api.menu.Update({menu_enabled: true});
       return result;
     };
 

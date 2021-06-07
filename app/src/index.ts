@@ -2,6 +2,9 @@
 import './new.scss';
 import './dark-theme.scss';
 
+import { InteropAPI, OpenFileData } from './remote-api';
+declare const api: InteropAPI;
+
 import { SpreadsheetManager } from './spreadsheet-manager'; 
 
 const spreadsheet_manager = new SpreadsheetManager(document.querySelector('#target') as HTMLElement);
@@ -11,17 +14,37 @@ Object.defineProperty(self, 'metadata', {
   get: () => spreadsheet_manager.metadata,
 });
 
-(self as any).api.menu.update({ 
+Object.defineProperty(self, 'spreadsheet_manager', {
+  get: () => spreadsheet_manager,
+});
+
+api.menu.Update({ 
   treb_version: TREB.version,
   menu_enabled: true,
 });
 
-(self as any).api.menu.subscribe(async (event: any, command: string) => {
+const LoadFromData = (result?: OpenFileData) => {
+  if (result) {
+    console.info(result);
+    if (result.data) {
+      spreadsheet_manager.LoadDocument(result.data, result.path, result.name);
+    }
+    document.title = result.name ? `TREB: ${result.name}` : 'TREB';
+  }
+};
+
+api.menu.Subscribe(async (event: any, command: string) => {
   switch (command) {
     case 'new':
-      if (spreadsheet_manager.ConfirmChanges()) {
+      if (await spreadsheet_manager.ConfirmChanges('Click OK to discard your changes and create a new document')) {
         spreadsheet_manager.Reset();
         document.title = 'TREB'; // could be handled by reset event instead
+      }
+      break;
+
+    case 'revert':
+      if (await spreadsheet_manager.ConfirmChanges('Click OK to discard your changes and revert to the last saved version')) {
+        LoadFromData(await api.files.Open(spreadsheet_manager.metadata.path));
       }
       break;
 
@@ -30,7 +53,9 @@ Object.defineProperty(self, 'metadata', {
     //  break;
 
     case 'open':
-      const result = await (self as any).api.files.open();
+      LoadFromData(await api.files.Open());
+      /*
+      const result = await api.files.open();
       if (result) {
         console.info(result);
         if (result.data) {
@@ -39,10 +64,11 @@ Object.defineProperty(self, 'metadata', {
         }
         document.title = result.name ? `TREB: ${result.name}` : 'TREB';
       }
+      */
       break;
 
     case 'toggle-theme':
-      (self as any).api.theme.toggle().then(() => { 
+      api.theme.Toggle().then(() => { 
         spreadsheet_manager.UpdateTheme();
       });
       break;

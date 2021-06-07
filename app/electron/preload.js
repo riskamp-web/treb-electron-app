@@ -28,20 +28,27 @@ contextBridge.exposeInMainWorld("api", {
   // licenseKeys: SecureElectronLicenseKeys.preloadBindings(ipcRenderer),
 
   theme: {
-    toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
-    system: () => ipcRenderer.invoke('dark-mode:system'),
+    Toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
+    System: () => ipcRenderer.invoke('dark-mode:system'),
   },
 
   menu: {
-    subscribe: (fn) => subscriptions.push(fn),
-    update: (data) => ipcRenderer.invoke('menu', data),
+    Subscribe: (fn) => subscriptions.push(fn),
+    Update: (data) => ipcRenderer.invoke('menu', data),
   },
 
   files: {
-    save: (path) => { console.info('save!', path) },
-    open: async (path) => { 
+    Save: (path) => { console.info('save!', path) },
+    Open: async (path) => { 
       return  ipcRenderer.invoke('fs', { type: 'open', path });
     },
+  },
+
+  modal: {
+    Show: async (data) => {
+      return ipcRenderer.invoke('modal', data);
+    },
+
   }
 
 });

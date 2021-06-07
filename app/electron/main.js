@@ -241,16 +241,29 @@ ipcMain.handle('menu', async (event, data) => {
 });
 
 //
+// alert/confirm
+//
+ipcMain.handle('modal', async (event, data) => {
+  return await dialog.showMessageBox(win, data);
+});
+
+//
 // handle a file system operation request
 //
 ipcMain.handle('fs', async (event, argument) => {
   switch (argument?.type) {
     case 'open':
       if (argument.path) {
-        console.info("ENOTIMPL", argument.path);
-        return;
+
+        // FIXME: invalid?
+
+        const data = await fsx.readFile(argument.path, "utf8");
+        return { path: argument.path, data, name: path.basename(argument.path) };
       }
       else {
+
+        // FIXME: invalid?
+
         const result = await dialog.showOpenDialog(win);
         if (!result.canceled && result.filePaths.length) {
           const file_path = result.filePaths[0];
