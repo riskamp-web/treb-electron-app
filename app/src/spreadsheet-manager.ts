@@ -176,6 +176,8 @@ export class SpreadsheetManager {
       tab_bar: true,
       scale_control: true,
       persist_scale: true,
+      font_scale: true,
+      tint_theme_colors: true,
 
       // since we are storing separate metadata anyway, we don't use the 
       // spreadsheet's default storage mechanism (it would just be redundant)

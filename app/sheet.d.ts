@@ -43,9 +43,12 @@ declare interface EmbeddedSheetOptions {
   toolbar_recalculate_button?: boolean;
   expand_formula_button?: boolean;
   dnd?: boolean;
+  tint_theme_colors?: boolean;
+  markdown?: boolean;
   delete_tab?: boolean;
   tab_bar?: boolean|'auto';
   add_tab?: boolean;
+  font_scale?: boolean;
   scroll?: string;
   collapsed?: boolean;
   container: Element;
